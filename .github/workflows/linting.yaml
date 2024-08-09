@@ -19,7 +19,7 @@ jobs:
       - name: Установка Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'  # Укажите версию Python, которую вы используете
+          python-version: '3.12'  # Укажите версию Python, которую вы используете
 
       - name: Установка Poetry
         run: |
@@ -40,4 +40,4 @@ jobs:
 
       - name: Сортировка импортов с isort
         run: |
-          poetry run isort .  # Сортируем импорты во всех файлах проекта
+          poetry run isort --check-only .  # Сортируем импорты во всех файлах проекта
