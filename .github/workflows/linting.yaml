@@ -1,0 +1,43 @@
+name: Linting
+
+on:
+  push:
+    branches:
+      - main      # Укажите ветку, для которой будет выполняться линтинг
+  pull_request:
+    branches:
+      - main      # Укажите ветку, для которой будет выполняться линтинг при создании Pull Request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Проверка из репозитория
+        uses: actions/checkout@v2
+
+      - name: Установка Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'  # Укажите версию Python, которую вы используете
+
+      - name: Установка Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.7.0  # Укажите желаемую версию Poetry
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH  # Добавляем Poetry в путь
+
+      - name: Установка зависимостей
+        run: |
+          poetry install --no-interaction --no-root  # Установка зависимостей без установки самого проекта
+
+      - name: Установка isort
+        run: |
+          poetry add --dev isort  # Установка isort как dev-зависимости через Poetry
+
+      - name: Линтинг кода с flake8
+        run: |
+          poetry run flake8 .  # Используем flake8 в контексте Poetry
+
+      - name: Сортировка импортов с isort
+        run: |
+          poetry run isort .  # Сортируем импорты во всех файлах проекта
