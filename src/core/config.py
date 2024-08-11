@@ -9,17 +9,10 @@ else:
 
 
 class ApiV1Prefix(BaseModel):
-    prefix: str = "/v1"
-    auth: str = "/auth"
-    users: str = "/users"
-    messages: str = "/messages"
-    dishes: str = "/dishes"
-    recipes: str = "/recipes"
-
-
-class ApiPrefix(BaseModel):
     prefix: str = "/api"
-    v1: ApiV1Prefix = ApiV1Prefix()
+    tweets: str = "/tweets"
+    medias: str = "/medias"
+    users: str = "/users"
 
 
 class DatabaseConfig(BaseSettings):
@@ -69,7 +62,7 @@ class Settings(BaseModel):
     model_config = SettingsConfigDict(
         env_file=(".env.template", ".env"),
     )
-    api: ApiPrefix = ApiPrefix()
+    api: ApiV1Prefix = ApiV1Prefix()
     db: DatabaseConfig = DatabaseConfig()
     test_db: TestingConfig = TestingConfig()
 

@@ -1,24 +1,46 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, UniqueConstraint
+from sqlalchemy import String, ForeignKey, Table, Column, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.base import Base
 
 if TYPE_CHECKING:
-    from src.core.models.posts import Post
+    from src.core.models.tweets import Tweet
+
+
+followers = Table(
+    "followers",
+    Base.metadata,
+    Column("follower_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("followed_id", Integer, ForeignKey("users.id"), primary_key=True),
+)
 
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = (UniqueConstraint("name", "surname", name="unique_name_surname"),)
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(30), nullable=False)
-    surname: Mapped[str] = mapped_column(String(30), nullable=False)
 
-    posts: Mapped[list["Post"]] = relationship(back_populates="user")
+    tweets: Mapped[list["Tweet"]] = relationship("Tweet", back_populates="users")
+
+    # Определяем отношения для следования
+    followed_users: Mapped[list["User"]] = relationship(
+        "User",
+        secondary=followers,
+        primaryjoin=id == followers.c.follower_id,
+        secondaryjoin=id == followers.c.followed_id,
+        back_populates="following_users",
+    )
+
+    following_users: Mapped[list["User"]] = relationship(
+        "User",
+        secondary=followers,
+        primaryjoin=id == followers.c.followed_id,
+        secondaryjoin=id == followers.c.follower_id,
+        back_populates="followed_users",
+    )
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r}, name={self.name!r}, surname={self.surname!r})"
+        return f"User(id={self.id!r}, name={self.name!r})"
