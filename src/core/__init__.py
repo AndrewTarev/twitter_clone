@@ -6,6 +6,6 @@ __ALL__ = (
 )
 
 from src.core.base import Base
+from src.core.models.likes import Like
 from src.core.models.tweets import Tweet
 from src.core.models.users import User
-from src.core.models.likes import Like
