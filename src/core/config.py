@@ -9,10 +9,8 @@ else:
 
 
 class ApiV1Prefix(BaseModel):
-    prefix: str = "/api"
-    tweets: str = "/tweets"
-    medias: str = "/medias"
-    users: str = "/users"
+    tweets: str = "/api/tweets"
+    users: str = "/api/users"
 
 
 class DatabaseConfig(BaseSettings):
@@ -71,4 +69,4 @@ settings = Settings()
 
 
 if __name__ == "__main__":
-    print(settings.test_db.url)
+    print(settings.api.likes)
