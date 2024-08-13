@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -22,8 +22,6 @@ class User(Base):
     __tablename__ = "users"
 
     name: Mapped[str] = mapped_column(String(30), nullable=False)
-    # tweet_id: Mapped[Optional[int]] = mapped_column(ForeignKey("tweets.id"))
-    # like_id: Mapped[Optional[int]] = mapped_column(ForeignKey("likes.id"))
 
     tweets: Mapped[List["Tweet"]] = relationship(back_populates="author", cascade="all")
     likes: Mapped[List["Like"]] = relationship(back_populates="users", cascade="all")

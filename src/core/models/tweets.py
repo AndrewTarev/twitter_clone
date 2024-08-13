@@ -16,10 +16,8 @@ class Tweet(Base):
     __tablename__ = "tweets"
 
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    # like_id: Mapped[int] = mapped_column(ForeignKey("likes.id"))
     media_id: Mapped[Optional[int]] = mapped_column(ForeignKey("medias.id"))
     content: Mapped[str] = mapped_column(String(3000), nullable=False)
-    # likes: Mapped[int] = mapped_column(default=0)
     tweet_date: Mapped[datetime] = mapped_column(server_default=func.now())
 
     author: Mapped["User"] = relationship(back_populates="tweets", single_parent=True)
