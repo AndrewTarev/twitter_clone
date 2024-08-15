@@ -20,6 +20,7 @@ pytest-asyncio = "^0.23.8"
 flake8 = "^7.1.1"
 greenlet = "^3.0.3"
 faker = "^26.3.0"
+loguru = "^0.7.2"
 
 [tool.isort]
 profile = "black"
