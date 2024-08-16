@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Depends
 
 from src.api.dependencies.user import get_user_dependency
 from src.core import User
