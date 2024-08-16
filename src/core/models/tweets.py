@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.base import Base
+from src.core.models.mixins.id_int_pk import IdIntPkMixin
 
 if TYPE_CHECKING:
     from src.core.models.likes import Like
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from src.core.models.users import User
 
 
-class Tweet(Base):
+class Tweet(Base, IdIntPkMixin):
     __tablename__ = "tweets"
 
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))

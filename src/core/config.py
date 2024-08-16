@@ -63,6 +63,7 @@ class Settings(BaseModel):
     api: ApiV1Prefix = ApiV1Prefix()
     db: DatabaseConfig = DatabaseConfig()
     test_db: TestingConfig = TestingConfig()
+    logging: str = "INFO"
 
 
 settings = Settings()

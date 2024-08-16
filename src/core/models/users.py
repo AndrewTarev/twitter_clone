@@ -1,50 +1,45 @@
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.base import Base
+from src.core.models.mixins.id_int_pk import IdIntPkMixin
+from src.core.models.security_key import SecurityKey
 
 if TYPE_CHECKING:
     from src.core.models.likes import Like
     from src.core.models.tweets import Tweet
 
 
-followers = Table(
-    "followers",
-    Base.metadata,
-    Column("follower_id", Integer, ForeignKey("users.id"), primary_key=True),
-    Column("followed_id", Integer, ForeignKey("users.id"), primary_key=True),
-)
-
-
-class User(Base):
+class User(Base, IdIntPkMixin):
     __tablename__ = "users"
 
     name: Mapped[str] = mapped_column(String(30), nullable=False)
 
     tweets: Mapped[List["Tweet"]] = relationship(back_populates="author", cascade="all")
     likes: Mapped[List["Like"]] = relationship(back_populates="users", cascade="all")
-
-    # Определяем отношения для следования
-    followed_users: Mapped[list["User"]] = relationship(
-        "User",
-        secondary=followers,
-        primaryjoin="User.id == followers.c.follower_id",
-        secondaryjoin="User.id == followers.c.followed_id",
-        back_populates="following_users",
-        cascade="all",
-        lazy="selectin",
+    security_keys: Mapped["SecurityKey"] = relationship(
+        back_populates="user", cascade="all"
     )
 
-    following_users: Mapped[list["User"]] = relationship(
+    following = relationship(
         "User",
-        secondary=followers,
-        primaryjoin="User.id == followers.c.followed_id",
-        secondaryjoin="User.id == followers.c.follower_id",
-        back_populates="followed_users",
+        secondary="user_following",
+        primaryjoin="User.id==user_following.c.user_id",
+        secondaryjoin="User.id==user_following.c.follower_id",
         cascade="all",
         lazy="selectin",
+        overlaps="followers",
+    )
+    followers = relationship(
+        "User",
+        secondary="user_following",
+        primaryjoin="User.id==user_following.c.follower_id",
+        secondaryjoin="User.id==user_following.c.user_id",
+        cascade="all",
+        lazy="selectin",
+        overlaps="following",
     )
 
     def __repr__(self) -> str:
