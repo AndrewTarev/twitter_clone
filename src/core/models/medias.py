@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 class Media(Base, IdIntPkMixin):
     __tablename__ = "medias"
-    media_path_id: Mapped[int] = mapped_column(nullable=False)
+    file_name: Mapped[str] = mapped_column(nullable=False)
+    path_media: Mapped[str] = mapped_column(nullable=False)
 
     tweets: Mapped["Tweet"] = relationship(back_populates="media_path")
