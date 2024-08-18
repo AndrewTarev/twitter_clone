@@ -6,7 +6,6 @@ from src.api.dependencies.user import get_user_dependency
 from src.core import User
 from src.core.config import settings
 from src.core.db_helper import db_helper
-from src.core.schemas.error_schemas import ErrorResponse
 from src.core.schemas.media_schemas import MediaOut
 from src.utils.logging_config import logger
 

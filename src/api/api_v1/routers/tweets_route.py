@@ -3,11 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.api_v1.cruds.tweets_crud import create_new_tweet, get_all_tweets
 from src.api.dependencies.user import get_user_dependency
-from src.core import Tweet, User
+from src.core import User
 from src.core.config import settings
 from src.core.db_helper import db_helper
 from src.core.schemas.error_schemas import ErrorResponse
-from src.core.schemas.tweets_schema import TweetIn, TweetOut, TweetsResponse
+from src.core.schemas.tweets_schema import TweetIn, TweetOut
 
 router = APIRouter(
     prefix=settings.api.tweets,

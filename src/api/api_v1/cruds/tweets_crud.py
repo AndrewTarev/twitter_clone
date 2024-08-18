@@ -1,9 +1,9 @@
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
 from src.core import Media, Tweet, User
-from src.core.schemas.tweets_schema import AttachmentBase, TweetIn, TweetResponse
+from src.core.schemas.tweets_schema import TweetIn
 from src.utils.logging_config import logger
 
 
