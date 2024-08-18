@@ -11,6 +11,7 @@ else:
 class ApiV1Prefix(BaseModel):
     tweets: str = "/api/tweets"
     users: str = "/api/users"
+    medias: str = "/api/medias"
 
 
 class DatabaseConfig(BaseSettings):
