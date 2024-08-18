@@ -1,20 +1,40 @@
-from datetime import datetime
-from typing import Optional
+from typing import List
 
-from pydantic import BaseModel, ConfigDict
-
-
-class BaseTweet(BaseModel):
-    author_id: int
-    content: str
-    media_path: Optional[str]
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class TweetIn(BaseTweet):
-    pass
+class TweetIn(BaseModel):
+    content: str = Field(..., alias="tweet_data")
+    tweet_media_ids: list[int] | None = None
 
 
-class TweetOut(BaseTweet):
+class TweetOut(BaseModel):
+    result: bool
+    tweet_id: int
     model_config = ConfigDict(from_attributes=True)
+
+
+class AttachmentBase(BaseModel):
+    link: str
+
+
+class UserBase(BaseModel):
     id: int
-    tweet_date: datetime
+    name: str
+
+
+class LikeBase(BaseModel):
+    user_id: int
+    name: str
+
+
+class TweetResponse(BaseModel):
+    id: int
+    content: str
+    attachments: List[AttachmentBase]
+    author: UserBase
+    likes: List[LikeBase]
+
+
+class TweetsResponse(BaseModel):
+    tweets: List[TweetResponse]

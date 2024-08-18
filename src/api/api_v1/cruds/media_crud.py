@@ -5,7 +5,7 @@ import time
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core import User, Media
+from src.core import Media, User
 from src.utils.logging_config import logger
 
 
