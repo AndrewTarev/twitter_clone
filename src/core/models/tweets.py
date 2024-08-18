@@ -1,7 +1,6 @@
-from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ForeignKey, String, func
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.base import Base
@@ -17,15 +16,15 @@ class Tweet(Base, IdIntPkMixin):
     __tablename__ = "tweets"
 
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    media_id: Mapped[Optional[int]] = mapped_column(ForeignKey("medias.id"))
     content: Mapped[str] = mapped_column(String(3000), nullable=False)
-    tweet_date: Mapped[datetime] = mapped_column(server_default=func.now())
 
     author: Mapped["User"] = relationship(back_populates="tweets", single_parent=True)
-    like_relation: Mapped[List["Like"]] = relationship(
+    likes: Mapped[List["Like"]] = relationship(
         back_populates="tweets", cascade="all, delete-orphan"
     )
-    media_path: Mapped["Media"] = relationship(back_populates="tweets")
+    media: Mapped[List["Media"]] = relationship(
+        back_populates="tweets", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
-        return f"<Post(id={self.id}, content='{self.content}', author_id={self.author_id}, image_path='{self.media_path}')>"
+        return f"<Tweet(id={self.id}, content='{self.content}', author_id={self.author_id}')>"

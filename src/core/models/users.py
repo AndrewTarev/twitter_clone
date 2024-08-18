@@ -18,7 +18,9 @@ class User(Base, IdIntPkMixin):
     name: Mapped[str] = mapped_column(String(30), nullable=False)
 
     tweets: Mapped[List["Tweet"]] = relationship(back_populates="author", cascade="all")
-    likes: Mapped[List["Like"]] = relationship(back_populates="users", cascade="all")
+    like_user: Mapped[List["Like"]] = relationship(
+        back_populates="users", cascade="all"
+    )
     security_keys: Mapped["SecurityKey"] = relationship(
         back_populates="user", cascade="all"
     )
