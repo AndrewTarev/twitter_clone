@@ -14,6 +14,9 @@ class Media(Base, IdIntPkMixin):
     __tablename__ = "medias"
     tweet_id: Mapped[int] = mapped_column(ForeignKey("tweets.id"), nullable=True)
     file_name: Mapped[str] = mapped_column(nullable=False)
-    path_media: Mapped[str] = mapped_column(nullable=False)
+    link: Mapped[str] = mapped_column(nullable=False)
 
-    tweets: Mapped["Tweet"] = relationship(back_populates="media")
+    tweets: Mapped["Tweet"] = relationship(back_populates="attachments")
+
+    def __repr__(self):
+        return f"<Media(link={self.link!r})>"

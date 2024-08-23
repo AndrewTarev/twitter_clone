@@ -21,7 +21,7 @@ async def handle_uploaded_file(files: UploadFile, session: AsyncSession, user: U
     file_location: str = os.path.join(abs_path, new_file_name)
     logger.info(f"Uploading {file_location}")
 
-    media: Media = Media(path_media=file_location, file_name=new_file_name)
+    media: Media = Media(link=file_location, file_name=new_file_name)
 
     with open(file_location, "wb") as buffer:
         buffer.write(files.file.read())

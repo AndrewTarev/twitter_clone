@@ -17,11 +17,10 @@ router = APIRouter(
 
 @router.post("", response_model=MediaOut)
 async def upload_media(
-    files: UploadFile = File(...),
+    files: UploadFile,
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    logger.info(f"Uploading {files.filename}")
     if not files.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File type not supported")
 
