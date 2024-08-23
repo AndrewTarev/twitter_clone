@@ -14,7 +14,7 @@ from src.utils.logging_config import logger
 
 fake = Faker()
 
-NUM_RECORDS = 20
+NUM_RECORDS = 5
 user_list = []
 keys_list = []
 tweet_list = []
