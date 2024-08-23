@@ -22,9 +22,9 @@ class Tweet(Base, IdIntPkMixin):
     likes: Mapped[List["Like"]] = relationship(
         back_populates="tweets", cascade="all, delete-orphan"
     )
-    media: Mapped[List["Media"]] = relationship(
+    attachments: Mapped[List["Media"]] = relationship(
         back_populates="tweets", cascade="all, delete-orphan"
     )
 
     def __repr__(self):
-        return f"<Tweet(id={self.id}, content='{self.content}', author_id={self.author_id}')>"
+        return f"<Tweet(id={self.id}, content={self.content}, author={self.author})>"
