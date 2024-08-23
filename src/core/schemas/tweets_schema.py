@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -25,16 +25,17 @@ class UserBase(BaseModel):
 
 class LikeBase(BaseModel):
     user_id: int
-    name: str
+    id: int
 
 
 class TweetResponse(BaseModel):
     id: int
     content: str
-    attachments: List[AttachmentBase]
+    attachments: Optional[List[AttachmentBase]]
     author: UserBase
     likes: List[LikeBase]
 
 
-class TweetsResponse(BaseModel):
+class TweetsResponseOut(BaseModel):
+    result: bool
     tweets: List[TweetResponse]
