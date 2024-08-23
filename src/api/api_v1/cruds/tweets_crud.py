@@ -1,6 +1,7 @@
+from fastapi import HTTPException
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import load_only, selectinload
 
 from src.core import Media, Tweet, User
 from src.core.schemas.tweets_schema import TweetIn
@@ -31,14 +32,28 @@ async def create_new_tweet(
     return tweet
 
 
-async def get_all_tweets(user: User, session: AsyncSession):
-    stmt = select(Tweet).options(
-        selectinload(Tweet.author),
-        selectinload(Tweet.media),
-        selectinload(Tweet.likes),
+async def get_all_tweets(session: AsyncSession):
+    stmt = (
+        select(Tweet)
+        .options(
+            load_only(Tweet.id, Tweet.content),
+            selectinload(Tweet.author),
+        )
+        .options(selectinload(Tweet.attachments))
+        .options(selectinload(Tweet.likes))
     )
 
     result: Result = await session.execute(stmt)
     tweets = result.scalars().unique().all()
 
     return tweets
+
+
+async def remove_tweets(session: AsyncSession, tweet_id: int, user: User):
+    tweet = await session.get(Tweet, tweet_id)
+    if tweet.author_id != user.id:
+        raise HTTPException(
+            status_code=403, detail="You can delete only yourself tweets!"
+        )
+    await session.delete(tweet)
+    await session.commit()
