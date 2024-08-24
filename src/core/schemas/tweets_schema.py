@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class TweetIn(BaseModel):
@@ -34,6 +34,11 @@ class TweetResponse(BaseModel):
     attachments: Optional[List[AttachmentBase]]
     author: UserBase
     likes: List[LikeBase]
+
+    @field_validator("attachments", mode="after")
+    @classmethod
+    def extract_attachments(cls, values: List[AttachmentBase]):
+        return [value.link for value in values]
 
 
 class TweetsResponseOut(BaseModel):

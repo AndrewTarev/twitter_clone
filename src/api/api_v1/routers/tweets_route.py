@@ -4,8 +4,10 @@ from fastapi import APIRouter, Depends, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.api_v1.cruds.tweets_crud import (
+    add_like_tweets,
     create_new_tweet,
     get_all_tweets,
+    remove_like_tweets,
     remove_tweets,
 )
 from src.api.dependencies.user import get_user_dependency
@@ -14,7 +16,6 @@ from src.core.config import settings
 from src.core.db_helper import db_helper
 from src.core.schemas.error_schemas import ErrorResponse
 from src.core.schemas.tweets_schema import TweetIn, TweetOut, TweetsResponseOut
-from src.utils.logging_config import logger
 
 router = APIRouter(
     prefix=settings.api.tweets,
@@ -37,7 +38,10 @@ async def create_tweets(
     return {"result": True, "tweet_id": new_tweet.id}
 
 
-@router.get("", response_model=TweetsResponseOut)
+@router.get(
+    "",
+    response_model=TweetsResponseOut,
+)
 async def get_tweets(
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
@@ -46,11 +50,37 @@ async def get_tweets(
     return {"result": True, "tweets": tweets}
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 async def delete_tweets(
     id: Annotated[int, Path],
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
 ):
     await remove_tweets(session=session, tweet_id=id, user=user)
+    return {"result": True}
+
+
+@router.post("/{id}/likes", status_code=status.HTTP_201_CREATED)
+async def like_tweets(
+    id: Annotated[int, Path],
+    user: User = Depends(get_user_dependency),
+    session: AsyncSession = Depends(db_helper.session_getter),
+):
+    await add_like_tweets(session=session, tweet_id=id, user=user)
+    return {"result": True}
+
+
+@router.delete(
+    "/{id}/likes",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_like_tweets(
+    id: Annotated[int, Path],
+    user: User = Depends(get_user_dependency),
+    session: AsyncSession = Depends(db_helper.session_getter),
+):
+    await remove_like_tweets(session=session, tweet_id=id, user=user)
     return {"result": True}

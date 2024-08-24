@@ -1,9 +1,9 @@
 from fastapi import HTTPException
-from sqlalchemy import Result, select
+from sqlalchemy import Result, and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import load_only, selectinload
 
-from src.core import Media, Tweet, User
+from src.core import Like, Media, Tweet, User
 from src.core.schemas.tweets_schema import TweetIn
 from src.utils.logging_config import logger
 
@@ -33,18 +33,15 @@ async def create_new_tweet(
 
 
 async def get_all_tweets(session: AsyncSession):
-    stmt = (
-        select(Tweet)
-        .options(
-            load_only(Tweet.id, Tweet.content),
-            selectinload(Tweet.author),
-        )
-        .options(selectinload(Tweet.attachments))
-        .options(selectinload(Tweet.likes))
+    stmt = select(Tweet).options(
+        load_only(Tweet.id, Tweet.content),
+        selectinload(Tweet.author),
+        selectinload(Tweet.attachments),
+        selectinload(Tweet.likes),
     )
 
     result: Result = await session.execute(stmt)
-    tweets = result.scalars().unique().all()
+    tweets = result.scalars().all()
 
     return tweets
 
@@ -57,3 +54,26 @@ async def remove_tweets(session: AsyncSession, tweet_id: int, user: User):
         )
     await session.delete(tweet)
     await session.commit()
+
+
+async def add_like_tweets(session: AsyncSession, tweet_id: int, user: User):
+    tweet = await session.get(Tweet, tweet_id)
+    if tweet:
+        like: Like = Like(user_id=user.id, tweet_id=tweet_id)
+        session.add(like)
+        await session.commit()
+    else:
+        raise HTTPException(status_code=400, detail="Tweet not found")
+
+
+async def remove_like_tweets(session: AsyncSession, tweet_id: int, user: User):
+    tweet = await session.get(Tweet, tweet_id)
+    if tweet:
+        result = await session.execute(
+            select(Like).where(and_(Like.user_id == user.id, Like.tweet_id == tweet_id))
+        )
+        like = result.scalars().first()
+        await session.delete(like)
+        await session.commit()
+    else:
+        raise HTTPException(status_code=400, detail="Tweet not found")
