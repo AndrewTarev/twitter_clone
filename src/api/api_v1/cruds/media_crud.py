@@ -24,8 +24,6 @@ async def handle_uploaded_file(file: UploadFile, session: AsyncSession, user: Us
 
     media: Media = Media(link=file_location, file_name=new_file_name)
 
-    # with open(file_location, "wb") as f:
-    #     f.write(file.file.read())
     async with aiofiles.open(file_location, "wb") as out_file:
         content = await file.read()
         await out_file.write(content)
