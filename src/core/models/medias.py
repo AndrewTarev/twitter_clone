@@ -18,5 +18,3 @@ class Media(Base, IdIntPkMixin):
 
     tweets: Mapped["Tweet"] = relationship(back_populates="attachments")
 
-    def __repr__(self):
-        return f"<Media(link={self.link!r})>"
