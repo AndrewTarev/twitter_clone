@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core import Base
@@ -12,6 +12,10 @@ if TYPE_CHECKING:
 
 class Like(Base, IdIntPkMixin):
     __tablename__ = "likes"
+    __table_args__ = (
+        UniqueConstraint("user_id", "tweet_id", name="unique_user_tweet_pair"),
+    )
+
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     tweet_id: Mapped[int] = mapped_column(ForeignKey("tweets.id"), nullable=False)
 
