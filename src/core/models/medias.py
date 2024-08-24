@@ -17,4 +17,3 @@ class Media(Base, IdIntPkMixin):
     link: Mapped[str] = mapped_column(nullable=False)
 
     tweets: Mapped["Tweet"] = relationship(back_populates="attachments")
-
