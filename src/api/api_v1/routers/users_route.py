@@ -3,11 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.api_v1.cruds.user_crud import (
-    get_user_by_id_crud,
-    user_follow,
-    user_unfollow,
-)
+from src.api.api_v1.cruds.user_crud import get_user_by_id_crud, user_follow, user_unfollow
 from src.api.dependencies.user import get_user_dependency
 from src.core import User
 from src.core.config import settings
