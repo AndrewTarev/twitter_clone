@@ -11,7 +11,6 @@ from backend.src.api.dependencies.user import get_user_dependency
 from backend.src.core import User
 from backend.src.core.config import settings
 from backend.src.core.db_helper import db_helper
-from backend.src.core.schemas.error_schemas import ErrorResponse
 from backend.src.core.schemas.tweets_schema import TweetIn, TweetOut, TweetsResponseOut
 from fastapi import APIRouter, Depends, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,7 +18,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter(
     prefix=settings.api.tweets,
     tags=["Tweets"],
-    responses={500: {"model": ErrorResponse}},
 )
 
 
