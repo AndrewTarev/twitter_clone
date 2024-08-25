@@ -1,6 +1,6 @@
 from backend.src.core import Followers, SecurityKey, User
 from backend.src.utils.logging_config import logger
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy import and_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 async def get_user(
     session: AsyncSession,
     api_key: str,
-) -> User | None:
+):
     stmt = (
         select(User)
         .join(SecurityKey, SecurityKey.user_id == User.id)
@@ -19,8 +19,11 @@ async def get_user(
     )
     user = await session.execute(stmt)
     result = user.scalars().first()
-    logger.info(f"headers api-key: {api_key}")
-    logger.info(f"user: {result}")
+    logger.info(f"Get user: {result}")
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
     return result
 
 
