@@ -4,7 +4,9 @@ from typing import AsyncIterator
 import uvicorn
 from backend.src.api.api_v1.routers import router
 from backend.src.core.db_helper import db_helper
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import JSONResponse
 
 
 @asynccontextmanager
@@ -14,6 +16,18 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI()
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "result": False,
+            "error_type": exc.status_code,
+            "error_message": exc.detail,
+        },
+    )
 
 
 app.include_router(router)
