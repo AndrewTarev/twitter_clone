@@ -15,6 +15,7 @@ class ApiV1Prefix(BaseModel):
 
 
 class DatabaseConfig(BaseSettings):
+
     POSTGRES_HOST: str
     POSTGRES_PORT: int
     POSTGRES_NAME: str
@@ -59,7 +60,7 @@ class TestingConfig(BaseModel):
 
 class Settings(BaseModel):
     model_config = SettingsConfigDict(
-        env_file=(".env.template", ".env"),
+        env_file=(".env", ".env.template"),
     )
     api: ApiV1Prefix = ApiV1Prefix()
     db: DatabaseConfig = DatabaseConfig()
