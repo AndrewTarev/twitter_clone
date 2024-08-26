@@ -1,7 +1,6 @@
 # python -m pytest -v
 import pytest
 from httpx import AsyncClient
-
 from tests.conftest import TEST_NAME, TEST_SECURITY_KEY
 
 
