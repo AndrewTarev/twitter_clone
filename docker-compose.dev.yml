@@ -12,7 +12,7 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${TEST_POSTGRES_USER} -d ${TEST_POSTGRES_NAME}" ]
       interval: 1s
-      timeout: 5s
+      timeout: 2s
       retries: 3
     networks:
       - my_network
