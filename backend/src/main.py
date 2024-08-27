@@ -5,7 +5,6 @@ import uvicorn
 from backend.src.api.api_v1.routers import router
 from backend.src.core.db_helper import db_helper
 from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 
@@ -17,14 +16,6 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_headers=["*"],
-    allow_methods=["*"],
-)
 
 
 @app.exception_handler(StarletteHTTPException)
