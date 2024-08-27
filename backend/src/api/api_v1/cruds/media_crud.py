@@ -27,9 +27,8 @@ async def handle_uploaded_file(file: UploadFile, session: AsyncSession, user: Us
     new_file_name = f"{timestamp}_{user.id}.{file_extension}"
     file_location: str = os.path.join(relative_directory, new_file_name)
 
-    logger.info(f"Uploading {file_location}")
-
-    media: Media = Media(link=file_location, file_name=new_file_name)
+    nginx_path: str = os.path.join("/images/", new_file_name)
+    media: Media = Media(link=nginx_path, file_name=new_file_name)
 
     try:
         async with aiofiles.open(file_location, "wb") as out_file:
