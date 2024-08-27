@@ -15,7 +15,6 @@ class ApiV1Prefix(BaseModel):
 
 
 class DatabaseConfig(BaseSettings):
-
     POSTGRES_HOST: str
     POSTGRES_PORT: int
     POSTGRES_NAME: str
@@ -41,12 +40,12 @@ class DatabaseConfig(BaseSettings):
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
 
 
-class TestingConfig(BaseModel):
-    POSTGRES_HOST: str = "localhost"
-    POSTGRES_PORT: int = 5430
-    POSTGRES_NAME: str = "test_db"
-    POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "postgres"
+class TestingConfig(BaseSettings):
+    TEST_POSTGRES_HOST: str
+    TEST_POSTGRES_PORT: int
+    TEST_POSTGRES_NAME: str
+    TEST_POSTGRES_USER: str
+    TEST_POSTGRES_PASSWORD: str
 
     echo: bool = True
     echo_pool: bool = False
@@ -55,7 +54,7 @@ class TestingConfig(BaseModel):
 
     @property
     def url(self):
-        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
+        return f"postgresql+asyncpg://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@{self.TEST_POSTGRES_HOST}:{self.TEST_POSTGRES_PORT}/{self.TEST_POSTGRES_NAME}"
 
 
 class Settings(BaseModel):
