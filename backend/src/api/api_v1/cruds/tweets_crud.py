@@ -3,6 +3,7 @@ from backend.src.core.schemas.tweets_schema import TweetIn
 from backend.src.utils.logging_config import logger
 from fastapi import HTTPException
 from sqlalchemy import Result, and_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import load_only, selectinload
 
@@ -58,9 +59,12 @@ async def remove_tweets(session: AsyncSession, tweet_id: int, user: User):
 async def add_like_tweets(session: AsyncSession, tweet_id: int, user: User):
     tweet = await session.get(Tweet, tweet_id)
     if tweet:
-        like: Like = Like(user_id=user.id, tweet_id=tweet_id)
-        session.add(like)
-        await session.commit()
+        try:
+            like: Like = Like(user_id=user.id, tweet_id=tweet_id)
+            session.add(like)
+            await session.commit()
+        except IntegrityError:
+            raise HTTPException(status_code=400, detail="Tweet already liked")
     else:
         raise HTTPException(status_code=400, detail="Tweet not found")
 
