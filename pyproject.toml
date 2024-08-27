@@ -10,18 +10,22 @@ python = "^3.12"
 fastapi = "^0.111.1"
 asyncpg = "^0.29.0"
 alembic = "^1.13.2"
-black = "^24.4.2"
 pydantic-settings = "^2.3.4"
-isort = "^5.13.2"
-fastapi-cache2 = {extras = ["redis"], version = "^0.2.2"}
 gunicorn = "^22.0.0"
-pytest = "^8.3.2"
-pytest-asyncio = "^0.23.8"
-flake8 = "^7.1.1"
 greenlet = "^3.0.3"
 faker = "^26.3.0"
 loguru = "^0.7.2"
 aiofiles = "^24.1.0"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.1"
+isort = "^5.13.2"
+pytest = "^8.3.2"
+pytest-asyncio = "^0.24.0"
+black = "^24.8.0"
+# poetry add pytest --group dev
+# poetry install --only main
+# poetry install --without test,docs
 
 [tool.isort]
 profile = "black"
@@ -35,3 +39,4 @@ src_paths = ["./src"]
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
