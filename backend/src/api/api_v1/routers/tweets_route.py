@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any, Dict
 
 from backend.src.api.api_v1.cruds.tweets_crud import (
     add_like_tweets,
@@ -30,7 +30,7 @@ async def create_tweets(
     tweet_in: TweetIn,
     session: AsyncSession = Depends(db_helper.session_getter),
     user: User = Depends(get_user_dependency),
-):
+) -> Dict[str, Any]:
     new_tweet = await create_new_tweet(session=session, tweet_in=tweet_in, user=user)
     return {"result": True, "tweet_id": new_tweet.id}
 
@@ -42,20 +42,20 @@ async def create_tweets(
 async def get_tweets(
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
-):
+) -> Dict[str, Any]:
     tweets = await get_all_tweets(session=session)
     return {"result": True, "tweets": tweets}
 
 
 @router.delete(
     "/{id}",
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
 )
 async def delete_tweets(
     id: Annotated[int, Path],
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
-):
+):  # type: ignore
     await remove_tweets(session=session, tweet_id=id, user=user)
     return {"result": True}
 
@@ -65,19 +65,19 @@ async def like_tweets(
     id: Annotated[int, Path],
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
-):
+) -> Dict[str, bool]:
     await add_like_tweets(session=session, tweet_id=id, user=user)
     return {"result": True}
 
 
 @router.delete(
     "/{id}/likes",
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
 )
 async def delete_like_tweets(
     id: Annotated[int, Path],
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
-):
+):  # type: ignore
     await remove_like_tweets(session=session, tweet_id=id, user=user)
     return {"result": True}

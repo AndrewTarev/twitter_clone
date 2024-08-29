@@ -1,5 +1,5 @@
 from backend.src.core import Followers, SecurityKey, User
-from backend.src.utils.logging_config import logger
+from backend.src.utils.logging_config import my_logger
 from fastapi import HTTPException, status
 from sqlalchemy import and_, select
 from sqlalchemy.exc import IntegrityError
@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 async def get_user(
     session: AsyncSession,
     api_key: str,
-):
+) -> User:
     stmt = (
         select(User)
         .join(SecurityKey, SecurityKey.user_id == User.id)
@@ -19,12 +19,12 @@ async def get_user(
     )
     user = await session.execute(stmt)
     result = user.scalars().first()
-    logger.info(f"Get user: {result}")
+    my_logger.info(f"Get user: {result}")
     if result is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    return result
+    return result  # type: ignore
 
 
 async def get_user_by_id_crud(
@@ -38,15 +38,15 @@ async def get_user_by_id_crud(
         .where(User.id == user_id)
     )
     user = await session.execute(stmt)
-    user = user.scalars().first()
-    return user
+    user = user.scalars().first()  # type: ignore
+    return user  # type: ignore
 
 
 async def user_follow(
     session: AsyncSession,
     user_id: int,
     user: User,
-):
+) -> None:
     try:
         follow: Followers = Followers(user_id=user.id, follower_id=user_id)
         session.add(follow)
@@ -65,7 +65,7 @@ async def user_unfollow(
     )
     result = await session.execute(stmt)
     follow = result.scalars().first()
-    logger.info(f"follow: {follow}")
+    my_logger.info(f"follow: {follow}")
 
     if follow:
         await session.delete(follow)

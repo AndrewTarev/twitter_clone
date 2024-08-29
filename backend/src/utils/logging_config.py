@@ -4,7 +4,7 @@ from backend.src.core.config import settings
 from loguru import logger
 
 
-def configure_logging() -> logger:
+def configure_logging() -> logger:  #
     # Удаление всех зависимостей по умолчанию
     logger.remove()
 
@@ -21,4 +21,4 @@ def configure_logging() -> logger:
     return logger
 
 
-logger = configure_logging()
+my_logger: logger = configure_logging()

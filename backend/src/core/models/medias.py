@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from backend.src import Tweet
+    from backend.src.core import Tweet
 
 
 class Media(Base, IdIntPkMixin):

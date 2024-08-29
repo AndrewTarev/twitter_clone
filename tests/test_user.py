@@ -5,7 +5,7 @@ from tests.conftest import TEST_NAME, TEST_SECURITY_KEY
 
 
 @pytest.mark.asyncio
-async def test_get_current_user(ac: AsyncClient):
+async def test_get_current_user(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.get("/api/users/me", headers=headers)
     data = response.json()
@@ -16,7 +16,7 @@ async def test_get_current_user(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_current_user_invalid_api_key(ac: AsyncClient):
+async def test_get_current_user_invalid_api_key(ac: AsyncClient) -> None:
     headers = {"Api-key": "wrong_secret_key"}
     response = await ac.get("/api/users/me", headers=headers)
 
@@ -24,7 +24,7 @@ async def test_get_current_user_invalid_api_key(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_user_by_id(ac: AsyncClient):
+async def test_get_user_by_id(ac: AsyncClient) -> None:
     response = await ac.get("/api/users/1")
     data = response.json()
     assert response.status_code == 200
@@ -33,7 +33,7 @@ async def test_get_user_by_id(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_user_by_id_not_found(ac: AsyncClient):
+async def test_get_user_by_id_not_found(ac: AsyncClient) -> None:
     response = await ac.get("/api/users/10")
     data = response.json()
     assert response.status_code == 404
@@ -41,17 +41,17 @@ async def test_get_user_by_id_not_found(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_following_user(ac: AsyncClient):
+async def test_following_user(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.post(
         "/api/users/2/follow",
         headers=headers,
     )
-    assert response.status_code == 201
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio
-async def test_invalid_following_user(ac: AsyncClient):
+async def test_invalid_following_user(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.post(
         "/api/users/9999/follow",
@@ -61,10 +61,10 @@ async def test_invalid_following_user(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_unfollowing_user(ac: AsyncClient):
+async def test_unfollowing_user(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.delete(
         "/api/users/2/follow",
         headers=headers,
     )
-    assert response.status_code == 204
+    assert response.status_code == 200

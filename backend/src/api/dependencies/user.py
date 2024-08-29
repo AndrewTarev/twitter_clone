@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def get_user_dependency(
-    api_key: Annotated[str | None, Header()],
+    api_key: Annotated[str, Header()],
     session: AsyncSession = Depends(db_helper.session_getter),
-) -> User:
+) -> User | None:
     user = await get_user(session=session, api_key=api_key)
     return user

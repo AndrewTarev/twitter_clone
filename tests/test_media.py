@@ -7,7 +7,7 @@ from tests.conftest import TEST_SECURITY_KEY
 
 
 @pytest.mark.asyncio
-async def test_send_image(ac: AsyncClient):
+async def test_send_image(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
 
     # Создание временного файла изображения для тестирования

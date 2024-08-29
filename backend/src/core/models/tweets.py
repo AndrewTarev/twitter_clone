@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from backend.src import Like, Media, User
+    from backend.src.core import Like, Media, User
 
 
 class Tweet(Base, IdIntPkMixin):
@@ -23,5 +23,5 @@ class Tweet(Base, IdIntPkMixin):
         back_populates="tweets", cascade="all, delete-orphan"
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Tweet(id={self.id}, content={self.content}, author={self.author})>"

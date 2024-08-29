@@ -2,14 +2,17 @@ import os
 import pathlib
 import time
 
-import aiofiles
+import aiofiles  # type: ignore
 from backend.src.core import Media, User
-from backend.src.utils.logging_config import logger
+from backend.src.utils.logging_config import my_logger
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-async def handle_uploaded_file(file: UploadFile, session: AsyncSession, user: User):
+async def handle_uploaded_file(
+    file: UploadFile, session: AsyncSession, user: User
+) -> int:
+
     # Определяем директорию для сохранения
     relative_directory = (
         pathlib.Path(__file__).resolve().parent.parent.parent.parent.parent.parent
@@ -19,10 +22,8 @@ async def handle_uploaded_file(file: UploadFile, session: AsyncSession, user: Us
         relative_directory, exist_ok=True
     )  # Создаем директорию, если не существует
 
-    logger.info(f"relative path: {relative_directory}")
-
     # Создаем уникальное имя файла
-    _, file_extension = file.content_type.split("/")
+    _, file_extension = file.content_type.split("/")  # type: ignore
     timestamp: int = int(time.time() * 1000)
     new_file_name = f"{timestamp}_{user.id}.{file_extension}"
     file_location: str = os.path.join(relative_directory, new_file_name)
@@ -37,9 +38,9 @@ async def handle_uploaded_file(file: UploadFile, session: AsyncSession, user: Us
 
         session.add(media)
         await session.commit()
-        logger.info(f"Создан медиа файл - {media}")
+        my_logger.info(f"Создан медиа файл - {media}")
     except Exception as e:
-        logger.error(f"Ошибка при загрузке файла: {e}")
+        my_logger.error(f"Ошибка при загрузке файла: {e}")
         raise
 
     return media.id

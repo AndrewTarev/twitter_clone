@@ -1,11 +1,5 @@
-from dotenv import find_dotenv, load_dotenv
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-if not find_dotenv():
-    exit("Переменные окружения не загружены, так как отсутствует файл .env")
-else:
-    load_dotenv()
 
 
 class ApiV1Prefix(BaseModel):
@@ -36,16 +30,16 @@ class DatabaseConfig(BaseSettings):
     }
 
     @property
-    def url(self):
+    def url(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
 
 
-class TestingConfig(BaseSettings):
-    TEST_POSTGRES_HOST: str
-    TEST_POSTGRES_PORT: int
-    TEST_POSTGRES_NAME: str
-    TEST_POSTGRES_USER: str
-    TEST_POSTGRES_PASSWORD: str
+class TestingConfig(BaseModel):
+    TEST_POSTGRES_HOST: str = "postgres"
+    TEST_POSTGRES_PORT: int = 5432
+    TEST_POSTGRES_NAME: str = "test_db"
+    TEST_POSTGRES_USER: str = "postgres"
+    TEST_POSTGRES_PASSWORD: str = "postgres"
 
     echo: bool = True
     echo_pool: bool = False
@@ -53,7 +47,7 @@ class TestingConfig(BaseSettings):
     max_overflow: int = 10
 
     @property
-    def url(self):
+    def url(self) -> str:
         return f"postgresql+asyncpg://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@{self.TEST_POSTGRES_HOST}:{self.TEST_POSTGRES_PORT}/{self.TEST_POSTGRES_NAME}"
 
 
@@ -62,13 +56,9 @@ class Settings(BaseModel):
         env_file=(".env", ".env.template"),
     )
     api: ApiV1Prefix = ApiV1Prefix()
-    db: DatabaseConfig = DatabaseConfig()
+    db: DatabaseConfig = DatabaseConfig()  # type: ignore
     test_db: TestingConfig = TestingConfig()
     logging: str = "INFO"
 
 
 settings = Settings()
-
-
-if __name__ == "__main__":
-    print(settings.api.likes)

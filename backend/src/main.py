@@ -2,11 +2,10 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 import uvicorn
-from prometheus_fastapi_instrumentator import Instrumentator
-
 from backend.src.api.api_v1.routers import router
 from backend.src.core.db_helper import db_helper
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 
@@ -19,13 +18,19 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI()
 
-
-instrumentator = Instrumentator()
-instrumentator.instrument(app).expose(app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_headers=["*"],
+    allow_methods=["*"],
+)
 
 
 @app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+async def http_exception_handler(
+    request: Request, exc: StarletteHTTPException
+) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,
         content={

@@ -38,9 +38,7 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_security_key")),
     )
-    op.create_index(
-        op.f("ix_security_key_key"), "security_key", ["key"], unique=True
-    )
+    op.create_index(op.f("ix_security_key_key"), "security_key", ["key"], unique=True)
     op.create_table(
         "tweets",
         sa.Column("author_id", sa.Integer(), nullable=False),

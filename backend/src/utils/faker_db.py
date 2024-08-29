@@ -3,7 +3,7 @@ import random
 
 from backend.src.core import Followers, Like, SecurityKey, Tweet, User
 from backend.src.core.db_helper import db_helper
-from backend.src.utils.logging_config import logger
+from backend.src.utils.logging_config import my_logger
 from faker import Faker
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,23 +14,23 @@ class FakeData:
     def __init__(self, session: AsyncSession, num_records: int):
         self.num_records: int = num_records
         self.session: AsyncSession = session
-        self.user_list = []
-        self.keys_list = []
-        self.tweet_list = []
-        self.likes_list = []
-        self.follower_list = []
+        self.user_list: list[User] = []
+        self.keys_list: list[SecurityKey] = []
+        self.tweet_list: list[Tweet] = []
+        self.likes_list: list[Like] = []
+        self.follower_list: list[Followers] = []
 
-    async def _create_test_user(self):
+    async def _create_test_user(self) -> None:
         """Добовляем test в БД, чтобы отработал фронтэнд"""
         test = User(name="test")
         self.session.add(test)
         await self.session.flush()
-        logger.info(f"User test = {test}")
+        my_logger.info(f"User test = {test}")
 
         test_token = SecurityKey(user_id=test.id, key="test")
         self.session.add(test_token)
         await self.session.flush()
-        logger.info(f"Api-key for user_test = {test_token}")
+        my_logger.info(f"Api-key for user_test = {test_token}")
 
         await self.session.commit()
 
@@ -42,7 +42,7 @@ class FakeData:
             self.user_list.append(new_user)
 
         self.session.add_all(self.user_list)
-        logger.info(f"Создан список юзеров {self.user_list}")
+        my_logger.info(f"Создан список юзеров {self.user_list}")
         await self.session.commit()
         return self.user_list
 
@@ -53,10 +53,10 @@ class FakeData:
             self.keys_list.append(new_token)
 
         self.session.add_all(self.keys_list)
-        logger.info(f"Создан список ключей {self.keys_list}")
+        my_logger.info(f"Создан список ключей {self.keys_list}")
         await self.session.commit()
 
-    async def _create_fake_tweets(self):
+    async def _create_fake_tweets(self) -> None:
         """создаем фэйковые твиты"""
         for user in self.user_list:
             for _ in range(random.randint(1, 5)):
@@ -68,10 +68,10 @@ class FakeData:
                 self.tweet_list.append(new_tweet)
 
         self.session.add_all(self.tweet_list)
-        logger.info(f"созданы фэйковые твиты = {self.tweet_list}")
+        my_logger.info(f"созданы фэйковые твиты = {self.tweet_list}")
         await self.session.commit()
 
-    async def _create_fake_likes(self):
+    async def _create_fake_likes(self) -> None:
         """Фэйковые лайки"""
         for tweet in self.tweet_list:
             random_user = random.randint(1, self.num_records)
@@ -79,10 +79,10 @@ class FakeData:
             self.likes_list.append(like_relation)
 
         self.session.add_all(self.likes_list)
-        logger.info(self.likes_list)
+        my_logger.info(self.likes_list)
         await self.session.commit()
 
-    async def _create_fake_followers(self):
+    async def _create_fake_followers(self) -> None:
         """Фэйковые фолловеры"""
         follower_set = set()
         for user in self.user_list:
@@ -96,7 +96,7 @@ class FakeData:
 
         await self.session.commit()
 
-    async def __call__(self):
+    async def __call__(self) -> None:
         await self._create_test_user()
         await self._create_fake_users()
         await self._create_fake_keys()
@@ -105,7 +105,7 @@ class FakeData:
         await self._create_fake_followers()
 
 
-async def main():
+async def main() -> None:
     async with db_helper.session_factory() as session:
         fake_data = FakeData(session=session, num_records=5)
         await fake_data()

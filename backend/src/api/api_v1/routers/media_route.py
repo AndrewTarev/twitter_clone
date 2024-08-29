@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from backend.src.api.api_v1.cruds.media_crud import handle_uploaded_file
 from backend.src.api.dependencies.user import get_user_dependency
 from backend.src.core import User
@@ -18,8 +20,8 @@ async def upload_media(
     file: UploadFile,
     user: User = Depends(get_user_dependency),
     session: AsyncSession = Depends(db_helper.session_getter),
-):
-    if not file.content_type.startswith("image/"):
+) -> Dict[str, Any]:
+    if not file.content_type.startswith("image/"):  # type: ignore
         raise HTTPException(status_code=400, detail="File type not supported")
 
     media_id = await handle_uploaded_file(file=file, session=session, user=user)

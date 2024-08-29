@@ -6,7 +6,7 @@ TWEET_ID: int = 0
 
 
 @pytest.mark.asyncio
-async def test_add_tweet(ac: AsyncClient):
+async def test_add_tweet(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.post(
         "/api/tweets",
@@ -22,7 +22,7 @@ async def test_add_tweet(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_all_tweets(ac: AsyncClient):
+async def test_get_all_tweets(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.get(
         "/api/tweets",
@@ -34,17 +34,17 @@ async def test_get_all_tweets(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_delete_your_tweet(ac: AsyncClient):
+async def test_delete_your_tweet(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.delete(
         f"/api/tweets/{TWEET_ID}",
         headers=headers,
     )
-    assert response.status_code == 204
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio
-async def test_delete_not_your_tweet(ac: AsyncClient):
+async def test_delete_not_your_tweet(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.delete(
         "/api/tweets/1",
@@ -54,7 +54,7 @@ async def test_delete_not_your_tweet(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_like_tweet(ac: AsyncClient):
+async def test_like_tweet(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.post(
         "/api/tweets/2/likes",
@@ -64,7 +64,7 @@ async def test_like_tweet(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_like_non_existent_tweet(ac: AsyncClient):
+async def test_like_non_existent_tweet(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.post(
         "/api/tweets/999/likes",
@@ -74,10 +74,10 @@ async def test_like_non_existent_tweet(ac: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_unlike_tweet(ac: AsyncClient):
+async def test_unlike_tweet(ac: AsyncClient) -> None:
     headers = {"Api-key": TEST_SECURITY_KEY}
     response = await ac.delete(
         "/api/tweets/2/likes",
         headers=headers,
     )
-    assert response.status_code == 204
+    assert response.status_code == 200

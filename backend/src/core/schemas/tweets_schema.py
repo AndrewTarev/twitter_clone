@@ -37,7 +37,7 @@ class TweetResponse(BaseModel):
 
     @field_validator("attachments", mode="after")
     @classmethod
-    def extract_attachments(cls, values: List[AttachmentBase]):
+    def extract_attachments(cls, values: List[AttachmentBase]) -> Optional[List[str]]:
         return [value.link for value in values]
 
 
