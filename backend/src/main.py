@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 import uvicorn
+from prometheus_fastapi_instrumentator import Instrumentator
+
 from backend.src.api.api_v1.routers import router
 from backend.src.core.db_helper import db_helper
 from fastapi import FastAPI, Request
@@ -16,6 +18,10 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI()
+
+
+instrumentator = Instrumentator()
+instrumentator.instrument(app).expose(app)
 
 
 @app.exception_handler(StarletteHTTPException)

@@ -16,6 +16,7 @@ greenlet = "^3.0.3"
 faker = "^26.3.0"
 loguru = "^0.7.2"
 aiofiles = "^24.1.0"
+prometheus-fastapi-instrumentator = "^7.0.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.1"
