@@ -85,7 +85,7 @@ API для корпоративного сервиса микроблогов, �
 
 
 ## Example
-![image_1.png](README_image/image_1.png)
-![image_2.png](README_image/image_2.png)
-![image_3.png](README_image/image_3.png)
+![image_1.png](image_README/image_1.png)
+![image_2.png](image_README/image_2.png)
+![image_3.png](image_README/image_3.png)
 
