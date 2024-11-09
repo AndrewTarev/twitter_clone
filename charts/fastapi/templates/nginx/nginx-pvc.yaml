@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.nginx.pvcName | default "nginx-pvc" }}
+spec:
+  accessModes:
+    - ReadWriteOnce  # Используем ReadWriteOnce для совместимости
+  resources:
+    requests:
+      storage: 1Gi
+

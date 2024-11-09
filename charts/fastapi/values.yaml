@@ -1,0 +1,32 @@
+replicas: 1
+
+app:
+  image: app:v1.0
+  port: 8000
+  targetPort: 8000
+
+postgres:
+  replicaCount: 1
+  image: postgres:15
+  host: postgres-service
+  port: "5432"
+  name: postgres
+  user: postgres
+  password: postgres
+  persistentVolume:
+    storage: 500Mi
+  persistentVolumeClaim:
+    storage: 400Mi
+
+nginx:
+  replicaCount: 1
+  appName: nginx
+  deploymentName: nginx-deployment
+  storageName: nginx-storage
+  nodeName: minikube-m02
+  pvcName: nginx-pvc
+  image: my-nginx:v1.0
+  containerName: nginx-container
+  containerPort: 8080
+  pvName: nginx-pv
+  serviceName: nginx-service

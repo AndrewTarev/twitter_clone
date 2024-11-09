@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nginx.deploymentName | default "nginx-deployment" }}
+  labels:
+    app: {{ .Values.nginx.appName | default "nginx" }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.nginx.appName | default "nginx" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nginx.appName | default "nginx" }}
+    spec:
+      restartPolicy: Always
+      nodeSelector:
+        "kubernetes.io/hostname": {{ .Values.nginx.nodeName | default "minikube-m02" }}
+      volumes:
+        - name: {{ .Values.nginx.storageName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.nginx.pvcName | default "nginx-pvc" }}
+      containers:
+        - image: "{{ .Values.nginx.image | default "my-nginx:v1.0" }}"
+          name: {{ .Values.nginx.containerName | default "nginx-container" }}
+          ports:
+            - containerPort: {{ .Values.nginx.containerPort | default 8080 }}
+          volumeMounts:
+            - name: {{ .Values.nginx.storageName }}
+              mountPath: /usr/share/nginx/html/images/
+          livenessProbe:
+            httpGet:
+              path: /docs
+              port: {{ .Values.nginx.containerPort | default 8080 }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: {{ .Values.nginx.containerPort | default 8080 }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+

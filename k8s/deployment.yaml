@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:latest
+          command: [ 'sh', '-c',
+              'until pg_isready -h postgres-service -p 5432;
+          do echo database is not ready; sleep 2; done;' ]  # postgres-service - имя сервиса постгрес
+      containers:
+        - name:  application
+          image: app:v1.0
+          envFrom:
+            - secretRef:
+                name: app-secret
+          volumeMounts:
+            - name: nginx-storage
+              mountPath: /usr/share/nginx/html/images/
+      volumes:
+        - name: nginx-storage
+          persistentVolumeClaim:
+            claimName: nginx-pvc

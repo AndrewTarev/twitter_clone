@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-my-app
+  labels:
+    app: application
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      initContainers:
+        - name: check-db-ready
+          image: {{ .Values.postgres.image }}
+          command: [ 'sh', '-c',
+            'until pg_isready -h {{ .Values.postgres.host }} -p {{ .Values.postgres.port }};
+          do echo database is not ready; sleep 2; done;' ]
+      containers:
+        - name: application
+          image: {{ .Values.app.image }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-app-secret
+          volumeMounts:
+            - name: {{ .Values.nginx.storageName }}
+              mountPath: /usr/share/nginx/html/images/
+          livenessProbe:
+            httpGet:
+              path: /docs
+              port: {{ .Values.app.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: {{ .Values.app.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+      volumes:
+        - name: {{ .Values.nginx.storageName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.nginx.pvcName }}

@@ -1,0 +1,12 @@
+minikube delete --all
+minikube start --nodes=2 --cpus=4 --memory=7838 --cni=calico
+minikube addons enable ingress
+
+docker build -t app:v1.0 .
+docker build -t my-nginx:v1.0 ./frontend
+minikube image load my-nginx:v1.0
+minikube image load app:v1.0
+
+kubectl apply -f /Users/andreytarev/PycharmProjects/twitter_clone_ci/k8s
+
+minikube tunnel (обязательно ввести пароль)

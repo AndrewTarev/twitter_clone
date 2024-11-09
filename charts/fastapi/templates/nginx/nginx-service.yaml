@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.nginx.serviceName | default "nginx-service" }}
+  labels:
+    app: {{ .Values.nginx.appName | default "nginx" }}
+spec:
+  selector:
+    app: {{ .Values.nginx.appName | default "nginx" }}
+  ports:
+    - port: 80
+      targetPort: {{ .Values.nginx.containerPort | default 8080 }}

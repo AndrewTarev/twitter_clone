@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fastapi-migrations
+  labels:
+    app: fastapi-migration
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      initContainers:
+        - name: wait-for-app
+          image: appropriate/curl:latest # Используем легковесный образ для curl
+          command: [ 'sh', '-c',
+            'until curl -s http://application-service:8000/docs;
+                do echo Application is not ready; sleep 2; done;' ]
+      restartPolicy: OnFailure
+      containers:
+        - name: migration-container
+          image: {{ .Values.app.image }}
+          command: [ 'sh', '-c',
+            'alembic upgrade head && python -m backend.src.utils.faker_db' ]
+          envFrom:
+            - secretRef:
+                name: migration-secret
