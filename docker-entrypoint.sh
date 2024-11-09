@@ -3,4 +3,4 @@
 alembic upgrade head
 
 # Команда для запуска приложения
-uvicorn backend.src.main:app --reload --host 0.0.0.0 --port 8000
+gunicorn backend.src.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000

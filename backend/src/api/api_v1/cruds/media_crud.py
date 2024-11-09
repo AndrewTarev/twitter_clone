@@ -16,7 +16,7 @@ async def handle_uploaded_file(
     # Определяем директорию для сохранения
     relative_directory = (
         pathlib.Path(__file__).resolve().parent.parent.parent.parent.parent.parent
-        / "frontend/static/images"
+        / "/usr/share/nginx/html/images/"
     )
     os.makedirs(
         relative_directory, exist_ok=True
@@ -27,8 +27,10 @@ async def handle_uploaded_file(
     timestamp: int = int(time.time() * 1000)
     new_file_name = f"{timestamp}_{user.id}.{file_extension}"
     file_location: str = os.path.join(relative_directory, new_file_name)
+    my_logger.info(f"file_location - {file_location}")
 
     nginx_path: str = os.path.join("/images/", new_file_name)
+    my_logger.info(f"nginx_path - {nginx_path}")
     media: Media = Media(link=nginx_path, file_name=new_file_name)
 
     try:

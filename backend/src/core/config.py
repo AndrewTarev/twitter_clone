@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class ApiV1Prefix(BaseModel):
@@ -15,7 +15,7 @@ class DatabaseConfig(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
 
-    echo: bool = True
+    echo: bool = False
     echo_pool: bool = False
     pool_size: int = 50
     max_overflow: int = 10
@@ -52,9 +52,6 @@ class TestingConfig(BaseModel):
 
 
 class Settings(BaseModel):
-    model_config = SettingsConfigDict(
-        env_file=(".env", ".env.template"),
-    )
     api: ApiV1Prefix = ApiV1Prefix()
     db: DatabaseConfig = DatabaseConfig()  # type: ignore
     test_db: TestingConfig = TestingConfig()

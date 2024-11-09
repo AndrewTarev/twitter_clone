@@ -40,7 +40,7 @@ services:
 
   frontend:
     build:
-      dockerfile: frontend/Dockerfile
+      dockerfile: frontend/docker_compose/Dockerfile
     container_name: nginx
     ports:
       - "80:80"
